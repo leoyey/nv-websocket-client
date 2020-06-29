@@ -386,13 +386,13 @@ class WritingThread extends WebSocketThread
     }
 
 
-    private boolean isFlushNeeded(boolean last)
+    boolean isFlushNeeded(boolean last)
     {
         return (last || mWebSocket.isAutoFlush() || mFlushNeeded || mCloseFrame != null);
     }
 
 
-    private long flushIfLongInterval(long lastFlushAt) throws WebSocketException
+    long flushIfLongInterval(long lastFlushAt) throws WebSocketException
     {
         // The current timestamp.
         long current = System.currentTimeMillis();
@@ -414,7 +414,7 @@ class WritingThread extends WebSocketThread
     }
 
 
-    private void doFlush() throws WebSocketException
+    void doFlush() throws WebSocketException
     {
         try
         {
@@ -443,7 +443,7 @@ class WritingThread extends WebSocketThread
     }
 
 
-    private void sendFrame(WebSocketFrame frame) throws WebSocketException
+    void sendFrame(WebSocketFrame frame) throws WebSocketException
     {
         // Compress the frame if appropriate.
         frame = WebSocketFrame.compressFrame(frame, mPMCE);
@@ -534,7 +534,7 @@ class WritingThread extends WebSocketThread
     }
 
 
-    private void notifyFinished()
+    void notifyFinished()
     {
         mWebSocket.onWritingThreadFinished(mCloseFrame);
     }

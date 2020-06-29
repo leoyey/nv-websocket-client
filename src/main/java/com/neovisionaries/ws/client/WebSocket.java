@@ -1113,6 +1113,7 @@ public class WebSocket
     private boolean mDirectTextMessage;
     private int mFrameQueueSize;
     private int mMaxPayloadSize;
+    private boolean isWriteDirect; // Write directly without create a write thread. The write operation will be done on calling thread.
     private boolean mOnConnectedCalled;
     private Object mOnConnectedCalledLock = new Object();
     private boolean mReadingThreadStarted;
@@ -1885,6 +1886,14 @@ public class WebSocket
         return this;
     }
 
+    public boolean isWriteDirect() {
+        return isWriteDirect;
+    }
+
+    public WebSocket setWriteDirect(boolean writeDirect) {
+        isWriteDirect = writeDirect;
+        return this;
+    }
 
     /**
      * Get the interval of periodical
@@ -3427,7 +3436,7 @@ public class WebSocket
     private void startThreads()
     {
         ReadingThread readingThread = new ReadingThread(this);
-        WritingThread writingThread = new WritingThread(this);
+        WritingThread writingThread = isWriteDirect ? new WritingDirect(this) : new WritingThread(this);
 
         synchronized (mThreadsLock)
         {
@@ -3440,7 +3449,9 @@ public class WebSocket
         writingThread.callOnThreadCreated();
 
         readingThread.start();
-        writingThread.start();
+        if (!isWriteDirect) {
+            writingThread.start();
+        }
     }
 
 
