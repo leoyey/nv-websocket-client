@@ -3663,7 +3663,7 @@ public class WebSocket
             mReadingThreadFinished = true;
             mServerCloseFrame = closeFrame;
 
-            if (mWritingThreadFinished == false)
+            if (!isWriteDirect && mWritingThreadFinished == false)
             {
                 // Wait for the writing thread to finish.
                 return;
